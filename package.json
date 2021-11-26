@@ -1,0 +1,12 @@
+{
+  "name": "dgcc-verifier-js-custom",
+  "version": "1.0.0",
+  "description": "DGCC QR verifier for a smaller customized version.",
+  "main": "main.js",
+  "scripts": {
+    "start": "http-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marco Carfizzi, Giacomo Arrigo",
+  "license": "ISC"
+}
