@@ -1,10 +1,12 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <!-- <meta charset="UTF-8"> -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>DGCC verifier</title>
+    
     <!-- bootstrap stuff -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -18,7 +20,7 @@
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
 
-
+    <link rel="text/css" href="./theme.css">
 </head>
 
 <body>
@@ -44,19 +46,17 @@
                 <div id="reader"></div>
             </div>
         </div>
-        <div id="errborder" class="row-md-auto alert alert-danger" style="height: 75%; margin-top: 5%; display: none;">
-            <div class="col-md my-auto" style="margin: auto; margin-top: 5%;">
-                <h3>
-                    <div id="errmsg"></div>
-                </h3>
+        <div id="errborder" class=" alert alert-danger" style="display: none;">
+            <div class="col-md" style="margin: auto;">
+                <div id="errmsg"></div>
             </div>
         </div>
-        <div id="succborder" class="row-md-auto border border-success rounded"
-            style="height: 75%; margin-top: 5%; display: none;">
-            <div class="col-md my-auto" style="margin: auto; margin-top: 5%;">
+        <div id="resultborder" class="row-md-auto border rounded"
+            style="height: 75%; margin-top: 3%; display: none;">
+            <div class="col-md my-auto" style="margin: auto;">
 
                 <h3>
-                    <div id="contentsucc" style="color: white;"></div>
+                    <div id="contentresult" style="color: white;"></div>
                 </h3><br>
                 <h4>
                     <div style="color: lightgray;">Name:</div>

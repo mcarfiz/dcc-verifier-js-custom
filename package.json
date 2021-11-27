@@ -2,9 +2,12 @@
   "name": "dgcc-verifier-js-custom",
   "version": "1.0.0",
   "description": "DGCC QR verifier for a smaller customized version.",
-  "main": "main.js",
+  "main": "electron.js",
+  "devDependencies": {
+    "electron": "^16.0.0"
+  },
   "scripts": {
-    "start": "http-server",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Marco Carfizzi, Giacomo Arrigo",

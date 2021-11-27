@@ -2,8 +2,10 @@ var errorMsg = document.getElementById('errmsg');
 var usrName = document.getElementById('userdata-name');
 var usrDob = document.getElementById('userdata-dob');
 var restartButton = document.getElementById('restartscan');
+var resultBorder = document.getElementById('resultborder');
 
 var BASE_URL = "https://mcarfiz.github.io/dgcc-verifier-js-custom/";
+var RULES_NUMBER = 5;
 
 var html5QrcodeScanner = new Html5Qrcode(/* element id */ "reader");
 var config = { fps: 10, qrbox: {width: document.getElementById('reader').clientWidth*0.75, height: document.getElementById('reader').clientHeigth*0.75} };
@@ -27,9 +29,7 @@ async function onScanSuccess(decodedText, decodedResult) {
         var dcc = await DCC.fromRaw(String(decodedText));
     } catch(error){
         console.log(error);
-        document.getElementById('errborder').style.display = "flex";
-        console.log('Certificate is NOT valid.');
-        errorMsg.innerHTML = 'Certificate is NOT valid.';
+        certNotValid(`N/A`,`N/A`);
         restartButton.style.display = "flex";
         return;
     }
@@ -145,30 +145,16 @@ async function onScanSuccess(decodedText, decodedResult) {
         // check if cose signature is valid against set of public keys
         const verified = await verify(dcc, keysList);
         if (verified) {
-            document.getElementById('succborder').classList.remove("bg-danger");
-            document.getElementById('succborder').classList.add("bg-success");
-            document.getElementById('contentsucc').innerHTML = "Certificate is valid.";
-            document.getElementById('succborder').style.display = "flex";
-            usrName.innerHTML = `${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`;
-            usrDob.innerHTML = `${dcc.payload.dob}`;
+            certValid(`${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`, `${dcc.payload.dob}`);
         }
         else {
-            document.getElementById('contentsucc').innerHTML = "Certificate is NOT valid.";
-            document.getElementById('succborder').style.display = "flex";
-            document.getElementById('succborder').style.color = "red";
-            document.getElementById('succborder').classList.remove("bg-success");
-            document.getElementById('succborder').classList.add("bg-danger");
-            usrName.innerHTML = `${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`;
-            usrDob.innerHTML = `${dcc.payload.dob}`;
-
+            certNotValid(`${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`, `${dcc.payload.dob}`);
         }
         console.log(verified ? "Certificate signature has been verified." : "Certificate signature CANNOT be verified.");
     }
 
     else {
-        document.getElementById('errborder').style.display = "flex";
-        console.log('Certificate content is NOT valid.');
-        errorMsg.innerHTML = 'Certificate content is NOT valid.';
+        certNotValid(`N/A`,`N/A`);
     }
 
     restartButton.style.display = "flex";
@@ -178,15 +164,15 @@ async function onScanSuccess(decodedText, decodedResult) {
 const verify = async function (dcc, keysList) {
     try{
         return cose.verify(dcc._coseRaw, { key:  keysList.keys[dcc.kid].publicKey});
-    } catch{
+    } catch{ // if key is not found in provided list
         return false;
     }
-    
 }
 
 // check if dcc follows set of rules
 const areRulesValid = async function (dcc, rules) {
-    if (rules.length < 4)
+    // certificate cannot be verified if all rules haven't been fetched
+    if (rules.length < RULES_NUMBER)
         return false;
     let validity = true;
     let i = 0;
@@ -194,6 +180,7 @@ const areRulesValid = async function (dcc, rules) {
         if (rule.evaluateDCC(dcc)) console.log(`Rule ${i} valid: ${rule.getDescription()}`);
         else console.log(`Rule ${i} NOT valid: ${rule.getDescription()}`);
         validity = (await rule.evaluateDCC(dcc)) && validity;
+        // end loop when a rule is not respected
         if (!validity) return false;
         i++;
     }
@@ -210,11 +197,36 @@ restartButton.addEventListener('click', function() {
 const flush = function () {
     usrName.innerHTML = "";
     usrDob.innerHTML = "";
-    document.getElementById('succborder').style.display="none";
+    resultBorder.style.display="none";
     document.getElementById('errborder').style.display="none";
     errorMsg.innerHTML = "";
     restartButton.style.display = "none";
     document.getElementById('title').style.display = "flex";
     document.getElementById('title').innerHTML = "Frame the DGCC QR code:";
-    document.getElementById('contentsucc').innerHTML = "";
+    document.getElementById('contentresult').innerHTML = "";
+}
+
+// fill result div with error colors and result values
+const certNotValid = function (name, dob) {
+    document.getElementById('contentresult').innerHTML = "Certificate is NOT valid.";
+    resultBorder.style.display = "flex";
+    resultBorder.style.color = "red";
+    resultBorder.classList.remove("bg-success");
+    resultBorder.classList.remove("border-success");
+    resultBorder.classList.add("border-danger");
+    resultBorder.classList.add("bg-danger");  
+    usrName.innerHTML = name;
+    usrDob.innerHTML = dob;         
+}
+
+// fill result div with success colors and result values
+const certValid = function (name, dob) {
+    document.getElementById('contentresult').innerHTML = "Certificate is valid.";
+    resultBorder.classList.remove("bg-danger"); 
+    resultBorder.classList.remove("border-danger");
+    resultBorder.classList.add("border-success");
+    resultBorder.classList.add("bg-success");
+    resultBorder.style.display = "flex";
+    usrName.innerHTML = name;
+    usrDob.innerHTML = dob;
 }
