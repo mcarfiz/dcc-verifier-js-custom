@@ -2,7 +2,7 @@
   "name": "dgcc-verifier-js-custom",
   "version": "1.0.0",
   "description": "DGCC QR verifier for a smaller customized version.",
-  "main": "electron.js",
+  "main": "main.js",
   "devDependencies": {
     "electron": "^16.0.0"
   },

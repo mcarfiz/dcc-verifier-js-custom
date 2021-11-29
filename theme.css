@@ -14,9 +14,10 @@
 }
 
 /* draggable region */
-body {
-    -webkit-app-region: drag;
-}
-.btn, a {
+.btn, a, body {
     -webkit-app-region: no-drag;
+}
+
+nav {
+    -webkit-app-region: drag;
 }
