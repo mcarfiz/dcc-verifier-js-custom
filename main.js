@@ -2,14 +2,14 @@ const { app, BrowserWindow, nativeTheme } = require("electron");
 const path = require('path');
 
 // create new application window
-function createWindow () {
+function createWindow() {
     const win = new BrowserWindow({
         width: 590,
         height: 700,
         titleBarStyle: 'hidden',
         titleBarOverlay: {
-            color : '#0d6efd',
-            symbolColor : '#000000'
+            color: '#0d6efd',
+            symbolColor: '#000000'
         }/*,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
@@ -22,7 +22,7 @@ function createWindow () {
     // debug console
     //win.webContents.openDevTools()
     win.loadFile(path.join(__dirname, '/index.html'))
-    
+
 }
 
 // on activation
