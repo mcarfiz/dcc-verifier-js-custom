@@ -140,7 +140,7 @@ async function onScanSuccess(decodedText, decodedResult) {
             .catch(error => {
                 document.getElementById('errborder').style.display = "flex";
                 errorMsg.className = "alert alert-danger";
-                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0004: " + error;
+                errorMsg.innerHTML = "Cannot fetch keys list: " + error;
             });
         // check if cose signature is valid against set of public keys
         try{ // try-catch needed to handle exception that is thrown when kid is valid but signature is not matching
