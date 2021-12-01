@@ -143,7 +143,12 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule VR-EU-0004: " + error;
             });
         // check if cose signature is valid against set of public keys
-        const verified = await verify(dcc, keysList);
+        try{ // try-catch needed to handle exception that is thrown when kid is valid but signature is not matching
+            var verified = await verify(dcc, keysList);
+        }catch{
+            verified = false;
+        }
+        
         if (verified) {
             certValid(`${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`, `${dcc.payload.dob}`);
         }
@@ -164,7 +169,7 @@ async function onScanSuccess(decodedText, decodedResult) {
 const verify = async function (dcc, keysList) {
     try {
         return cose.verify(dcc._coseRaw, { key: keysList.keys[dcc.kid].publicKey });
-    } catch { // if key is not found in provided list
+    } catch{ // if key is not found in provided list
         return false;
     }
 }
@@ -193,7 +198,6 @@ const areRulesValid = async function (dcc, rules) {
             console.log(error);
             return false;
         }
-        
     }
     return validity;
 }
