@@ -177,12 +177,23 @@ const areRulesValid = async function (dcc, rules) {
     let validity = true;
     let i = 0;
     for (const rule of rules) {
-        if (rule.evaluateDCC(dcc)) console.log(`Rule ${i} valid: ${rule.getDescription()}`);
-        else console.log(`Rule ${i} NOT valid: ${rule.getDescription()}`);
-        validity = (await rule.evaluateDCC(dcc)) && validity;
-        // end loop when a rule is not respected
-        if (!validity) return false;
-        i++;
+        // handling exception of when the payload has valid structure but data of wrong type
+        // or anything that doesn't work with the rules
+        try{
+            rule_valid = await rule.evaluateDCC(dcc);
+            if (rule_valid) 
+                console.log(`Rule ${i} valid: ${rule.getDescription()}`);
+            else 
+                console.log(`Rule ${i} NOT valid: ${rule.getDescription()}`);
+            validity = rule_valid && validity;
+            // end loop when a rule is not respected
+            if (!validity) return false;
+            i++;
+        }catch(error){
+            console.log(error);
+            return false;
+        }
+        
     }
     return validity;
 }
