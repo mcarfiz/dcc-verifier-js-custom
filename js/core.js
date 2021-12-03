@@ -34,9 +34,11 @@ async function onScanSuccess(decodedText, decodedResult) {
         return;
     }
 
-    // build rules array from files
     const rule_array = [];
-    await fetch(BASE_URL + '/data/rules/VR-EU-0000.json')
+    var valueSets;
+
+    // fetch value sets
+    await fetch(BASE_URL + '/data/rules/valueSets.json')
         .then(response => {
             if (response.ok)
                 return response.json();
@@ -44,47 +46,16 @@ async function onScanSuccess(decodedText, decodedResult) {
                 throw new Error('Fetching error');
         })
         .then(data => {
-            rule_array.push(Rule.fromJSON(data, {}));
+            valueSets = data;
         })
         .catch(error => {
             document.getElementById('errborder').style.display = "flex";
             errorMsg.className = "alert alert-danger";
-            errorMsg.innerHTML = "Cannot fetch rule VR-EU-0000: " + error;
+            errorMsg.innerHTML = "Cannot fetch rule value sets: " + error;
         });
 
-    await fetch(BASE_URL + '/data/rules/VR-EU-0001.json')
-        .then(response => {
-            if (response.ok)
-                return response.json();
-            else
-                throw new Error('Fetching error');
-        })
-        .then(data => {
-            rule_array.push(Rule.fromJSON(data, {}));
-        })
-        .catch(error => {
-            document.getElementById('errborder').style.display = "flex";
-            errorMsg.className = "alert alert-danger";
-            errorMsg.innerHTML = "Cannot fetch rule VR-EU-0001: " + error;
-        });
-
-    await fetch(BASE_URL + '/data/rules/VR-EU-0002.json')
-        .then(response => {
-            if (response.ok)
-                return response.json();
-            else
-                throw new Error('Fetching error');
-        })
-        .then(data => {
-            rule_array.push(Rule.fromJSON(data, {}));
-        })
-        .catch(error => {
-            document.getElementById('errborder').style.display = "flex";
-            errorMsg.className = "alert alert-danger";
-            errorMsg.innerHTML = "Cannot fetch rule VR-EU-0002: " + error;
-        });
-
-    await fetch(BASE_URL + '/data/rules/VR-EU-0003.json')
+    // fetch general rules and push it into rules array
+    await fetch(BASE_URL + '/data/rules/GR-EU-0001.json')
         .then(response => {
             if (response.ok)
                 return response.json();
@@ -93,31 +64,239 @@ async function onScanSuccess(decodedText, decodedResult) {
         })
         .then(data => {
             rule_array.push(Rule.fromJSON(data, {
-                //valueSets,
-                validationClock: new Date().toISOString(),
+                valueSets
             }));
         })
         .catch(error => {
             document.getElementById('errborder').style.display = "flex";
             errorMsg.className = "alert alert-danger";
-            errorMsg.innerHTML = "Cannot fetch rule VR-EU-0003: " + error;
+            errorMsg.innerHTML = "Cannot fetch rule GR-EU-0001: " + error;
         });
 
-    await fetch(BASE_URL + '/data/rules/VR-EU-0004.json')
-        .then(response => {
-            if (response.ok)
-                return response.json();
-            else
-                throw new Error('Fetching error');
-        })
-        .then(data => {
-            rule_array.push(Rule.fromJSON(data, {}));
-        })
-        .catch(error => {
-            document.getElementById('errborder').style.display = "flex";
-            errorMsg.className = "alert alert-danger";
-            errorMsg.innerHTML = "Cannot fetch rule VR-EU-0004: " + error;
-        });
+    // build rules array from vaccination files
+    if ('v' in dcc.payload) {
+        await fetch(BASE_URL + '/data/rules/VR-EU-0000.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0000: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/VR-EU-0001.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0001: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/VR-EU-0002.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0002: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/VR-EU-0003.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {
+                    validationClock: new Date().toISOString(),
+                }));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0003: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/VR-EU-0004.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0004: " + error;
+            });
+
+        console.log("vaccination");
+    }
+        
+    // build rules array from test files
+    if ('t' in dcc.payload) {
+        await fetch(BASE_URL + '/data/rules/TR-EU-0000.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule TR-EU-0000: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/TR-EU-0001.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {valueSets}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule TR-EU-0001: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/TR-EU-0002.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {valueSets}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule TR-EU-0002: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/TR-EU-0003.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {valueSets}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule TR-EU-0003: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/TR-EU-0004.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule TR-EU-0004: " + error;
+            });
+        console.log("test");
+    }
+        
+    // build rules array from recovery files
+    if ('r' in dcc.payload) {
+        await fetch(BASE_URL + '/data/rules/RR-EU-0000.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule RR-EU-0000: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/RR-EU-0001.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {
+                    validationClock: new Date().toISOString(),
+                }));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0001: " + error;
+            });
+
+        await fetch(BASE_URL + '/data/rules/RR-EU-0002.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                rule_array.push(Rule.fromJSON(data, {}));
+            })
+            .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch rule RR-EU-0002: " + error;
+            });
+        console.log("recovery");
+    }
 
     // check if dcc follows all the rules in the array
     const rulesValid = await areRulesValid(dcc, rule_array);
