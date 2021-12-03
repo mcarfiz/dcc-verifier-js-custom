@@ -5,7 +5,7 @@ var restartButton = document.getElementById('restartscan');
 var resultBorder = document.getElementById('resultborder');
 
 var BASE_URL = "https://mcarfiz.github.io/dgcc-verifier-js-custom/";
-var RULES_NUMBER = 5;
+var RULES_NUMBER;
 
 var html5QrcodeScanner = new Html5Qrcode(/* element id */ "reader");
 var config = { fps: 10, qrbox: { width: document.getElementById('reader').clientWidth * 0.75, height: document.getElementById('reader').clientHeigth * 0.75 } };
@@ -75,6 +75,7 @@ async function onScanSuccess(decodedText, decodedResult) {
 
     // build rules array from vaccination files
     if ('v' in dcc.payload) {
+        RULES_NUMBER = 6;
         await fetch(BASE_URL + '/data/rules/VR-EU-0000.json')
             .then(response => {
                 if (response.ok)
@@ -162,6 +163,8 @@ async function onScanSuccess(decodedText, decodedResult) {
         
     // build rules array from test files
     if ('t' in dcc.payload) {
+        RULES_NUMBER = 6;
+        console.log(JSON.stringify(dcc.payload));
         await fetch(BASE_URL + '/data/rules/TR-EU-0000.json')
             .then(response => {
                 if (response.ok)
@@ -246,6 +249,8 @@ async function onScanSuccess(decodedText, decodedResult) {
         
     // build rules array from recovery files
     if ('r' in dcc.payload) {
+        RULES_NUMBER = 4;
+        console.log(JSON.stringify(dcc.payload));
         await fetch(BASE_URL + '/data/rules/RR-EU-0000.json')
             .then(response => {
                 if (response.ok)
@@ -277,7 +282,7 @@ async function onScanSuccess(decodedText, decodedResult) {
             .catch(error => {
                 document.getElementById('errborder').style.display = "flex";
                 errorMsg.className = "alert alert-danger";
-                errorMsg.innerHTML = "Cannot fetch rule VR-EU-0001: " + error;
+                errorMsg.innerHTML = "Cannot fetch rule RR-EU-0001: " + error;
             });
 
         await fetch(BASE_URL + '/data/rules/RR-EU-0002.json')
@@ -356,7 +361,7 @@ const verify = async function (dcc, keysList) {
 // check if dcc follows set of rules
 const areRulesValid = async function (dcc, rules) {
     // certificate cannot be verified if all rules haven't been fetched
-    if (rules.length < RULES_NUMBER)
+    if (rules.length != RULES_NUMBER)
         return false;
     let validity = true;
     let i = 0;

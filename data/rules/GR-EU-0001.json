@@ -35,7 +35,9 @@
               {
                 "var": "payload.r.0.tg"
               },
-              "external.valueSets.disease-agent-targeted"
+              {
+                "var": "external.valueSets.disease-agent-targeted"
+              }
             ]
           },
           true
