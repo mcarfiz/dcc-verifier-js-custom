@@ -28,18 +28,18 @@
         "before": [
           {
             "plusTime": [
-                {
-                    "var": "external.validationClock"
-                },
+              {
+                "var": "external.validationClock"
+              },
               0,
               "day"
             ]
           },
           {
             "plusTime": [
-                {
-                    "var": "payload.t.0.sc"
-                },
+              {
+                "var": "payload.t.0.sc"
+              },
               72,
               "hour"
             ]

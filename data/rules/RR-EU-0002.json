@@ -20,7 +20,7 @@
     "r.0.df",
     "r.0.du",
     "r.0.fr"
-  ], 
+  ],
   "Logic": {
     "if": [
       {
@@ -32,9 +32,9 @@
             "not-before": [
               {
                 "plusTime": [
-                    {
-                        "var": "payload.r.0.df"
-                    },
+                  {
+                    "var": "payload.r.0.df"
+                  },
                   0,
                   "day"
                 ]
@@ -48,32 +48,32 @@
                   "day"
                 ]
               }
-          ]
-        },
-        {
-          "not-after": [
-            {
-              "plusTime": [
-                {
-                  "var": "payload.r.0.du"
-                },
-                0,
-                "day"
-              ]
-            },
-            {
-              "plusTime": [
-                {
-                  "var": "payload.r.0.fr"
-                },
-                180,
-                "day"
-              ]
-            }
-          ]
-        }
-      ]
-    },
+            ]
+          },
+          {
+            "not-after": [
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.r.0.du"
+                  },
+                  0,
+                  "day"
+                ]
+              },
+              {
+                "plusTime": [
+                  {
+                    "var": "payload.r.0.fr"
+                  },
+                  180,
+                  "day"
+                ]
+              }
+            ]
+          }
+        ]
+      },
       true
     ]
   }

@@ -24,7 +24,7 @@
     "v.0.tg"
   ],
   "Logic": {
-    "and":[
+    "and": [
       {
         "if": [
           {
@@ -70,7 +70,7 @@
             "in": [
               {
                 "var": "payload.v.0.tg"
-              },   
+              },
               {
                 "var": "external.valueSets.disease-agent-targeted"
               }
@@ -80,6 +80,5 @@
         ]
       }
     ]
-    
   }
 }

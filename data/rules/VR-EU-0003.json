@@ -28,18 +28,18 @@
         "before": [
           {
             "plusTime": [
-                {
-                    "var": "payload.v.0.dt"
-                },
+              {
+                "var": "payload.v.0.dt"
+              },
               14,
               "day"
             ]
           },
           {
             "plusTime": [
-                {
-                    "var": "external.validationClock"
-                },
+              {
+                "var": "external.validationClock"
+              },
               0,
               "day"
             ]
@@ -47,11 +47,11 @@
           {
             "plusTime": [
               {
-                  "var": "payload.v.0.dt"
+                "var": "payload.v.0.dt"
               },
-            365,
-            "day"
-          ]
+              365,
+              "day"
+            ]
           }
         ]
       },

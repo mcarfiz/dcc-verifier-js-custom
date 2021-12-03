@@ -19,7 +19,7 @@
     "r.0",
     "r.0.df",
     "r.0.du"
-  ],  
+  ],
   "Logic": {
     "if": [
       {
@@ -29,18 +29,9 @@
         "not-after": [
           {
             "plusTime": [
-                {
-                    "var": "payload.r.0.df"
-                },
-              0,
-              "day"
-            ]
-          },
-          {
-            "plusTime": [
-                {
-                    "var": "external.validationClock"
-                },
+              {
+                "var": "payload.r.0.df"
+              },
               0,
               "day"
             ]
@@ -48,11 +39,20 @@
           {
             "plusTime": [
               {
-                  "var": "payload.r.0.du"
+                "var": "external.validationClock"
               },
-            0,
-            "day"
-          ]
+              0,
+              "day"
+            ]
+          },
+          {
+            "plusTime": [
+              {
+                "var": "payload.r.0.du"
+              },
+              0,
+              "day"
+            ]
           }
         ]
       },

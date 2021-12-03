@@ -22,7 +22,7 @@
   "Logic": {
     "if": [
       {
-       "var" : "payload.t.0" 
+        "var": "payload.t.0"
       },
       {
         "===": [
