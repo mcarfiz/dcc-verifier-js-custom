@@ -178,8 +178,7 @@ async function onScanSuccess(decodedText, decodedResult) {
         
     // build rules array from test files
     if ('t' in dcc.payload) {
-        RULES_NUMBER = 7;
-        console.log(JSON.stringify(dcc.payload));
+        RULES_NUMBER = 7;      
         await fetch(BASE_URL + '/data/rules/TR-EU-0000.json')
             .then(response => {
                 if (response.ok)
@@ -267,7 +266,6 @@ async function onScanSuccess(decodedText, decodedResult) {
     // build rules array from recovery files
     if ('r' in dcc.payload) {
         RULES_NUMBER = 5;
-        console.log(JSON.stringify(dcc.payload));
         await fetch(BASE_URL + '/data/rules/RR-EU-0000.json')
             .then(response => {
                 if (response.ok)
