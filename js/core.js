@@ -221,7 +221,9 @@ async function onScanSuccess(decodedText, decodedResult) {
                     throw new Error('Fetching error');
             })
             .then(data => {
-                rule_array.push(Rule.fromJSON(data, {valueSets}));
+                rule_array.push(Rule.fromJSON(data, {
+                    validationClock: new Date().toISOString(),
+                }));
             })
             .catch(error => {
                 document.getElementById('errborder').style.display = "flex";
