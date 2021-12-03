@@ -51,7 +51,9 @@
               {
                 "var": "payload.t.0.tg"
               },
-              "external.valueSets.disease-agent-targeted"
+              {
+                "var": "external.valueSets.disease-agent-targeted"
+              }
             ]
           },
           true
@@ -67,7 +69,9 @@
               {
                 "var": "payload.v.0.tg"
               },   
-              "external.valueSets.disease-agent-targeted"
+              {
+                "var": "external.valueSets.disease-agent-targeted"
+              }
             ]
           },
           true

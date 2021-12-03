@@ -34,8 +34,9 @@
           {
             "var": "payload.t.0.ma"
           },
-          
-          "external.valueSets.covid-19-lab-test-manufacturer-and-name"
+          {
+            "var": "external.valueSets.covid-19-lab-test-manufacturer-and-name"
+          }
         ]
       },
       true
