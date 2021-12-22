@@ -51,7 +51,7 @@ async function onScanSuccess(decodedText, decodedResult) {
         .catch(error => {
             document.getElementById('errborder').style.display = "flex";
             errorMsg.className = "alert alert-danger";
-            errorMsg.innerHTML = "Cannot fetch rule value sets: " + error;
+            errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
         });
 
     // fetch general rules and push it into rules array
@@ -175,10 +175,10 @@ async function onScanSuccess(decodedText, decodedResult) {
 
         console.log("vaccination");
     }
-        
+
     // build rules array from test files
     if ('t' in dcc.payload) {
-        RULES_NUMBER = 7;      
+        RULES_NUMBER = 7;
         await fetch(BASE_URL + '/data/rules/TR-EU-0000.json')
             .then(response => {
                 if (response.ok)
@@ -203,7 +203,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                     throw new Error('Fetching error');
             })
             .then(data => {
-                rule_array.push(Rule.fromJSON(data, {valueSets}));
+                rule_array.push(Rule.fromJSON(data, { valueSets }));
             })
             .catch(error => {
                 document.getElementById('errborder').style.display = "flex";
@@ -219,7 +219,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                     throw new Error('Fetching error');
             })
             .then(data => {
-                rule_array.push(Rule.fromJSON(data, {valueSets}));
+                rule_array.push(Rule.fromJSON(data, { valueSets }));
             })
             .catch(error => {
                 document.getElementById('errborder').style.display = "flex";
@@ -262,7 +262,7 @@ async function onScanSuccess(decodedText, decodedResult) {
             });
         console.log("test");
     }
-        
+
     // build rules array from recovery files
     if ('r' in dcc.payload) {
         RULES_NUMBER = 5;
@@ -342,12 +342,12 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch keys list: " + error;
             });
         // check if cose signature is valid against set of public keys
-        try{ // try-catch needed to handle exception that is thrown when kid is valid but signature is not matching
+        try { // try-catch needed to handle exception that is thrown when kid is valid but signature is not matching
             var verified = await verify(dcc, keysList);
-        }catch{
+        } catch {
             verified = false;
         }
-        
+
         if (verified) {
             certValid(`${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`, `${dcc.payload.dob}`);
         }
@@ -368,7 +368,7 @@ async function onScanSuccess(decodedText, decodedResult) {
 const verify = async function (dcc, keysList) {
     try {
         return cose.verify(dcc._coseRaw, { key: keysList.keys[dcc.kid].publicKey });
-    } catch{ // if key is not found in provided list
+    } catch { // if key is not found in provided list
         return false;
     }
 }
@@ -383,17 +383,17 @@ const areRulesValid = async function (dcc, rules) {
     for (const rule of rules) {
         // handling exception of when the payload has valid structure but data of wrong type
         // or anything that doesn't work with the rules
-        try{
+        try {
             rule_valid = await rule.evaluateDCC(dcc);
-            if (rule_valid) 
+            if (rule_valid)
                 console.log(`Rule ${i} valid: ${rule.getDescription()}`);
-            else 
+            else
                 console.log(`Rule ${i} NOT valid: ${rule.getDescription()}`);
             validity = rule_valid && validity;
             // end loop when a rule is not respected
             if (!validity) return false;
             i++;
-        }catch(error){
+        } catch (error) {
             console.log(error);
             return false;
         }
