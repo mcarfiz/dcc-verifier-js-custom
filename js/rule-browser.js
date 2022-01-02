@@ -18,6 +18,10 @@ class Rule {
     return this._payload;
   }
 
+  get identifier() {
+      return this._payload.Identifier;
+  }
+
   getDescription(language = 'en') {
     const description = this._payload.Description.find((element) => element.lang === language);
     return description ? description.desc : null;

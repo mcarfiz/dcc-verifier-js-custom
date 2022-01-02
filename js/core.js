@@ -386,9 +386,9 @@ const areRulesValid = async function (dcc, rules) {
         try {
             rule_valid = await rule.evaluateDCC(dcc);
             if (rule_valid)
-                console.log(`Rule ${i} valid: ${rule.getDescription()}`);
+                console.log(`Rule ${rule.identifier} valid: ${rule.getDescription()}`);
             else
-                console.log(`Rule ${i} NOT valid: ${rule.getDescription()}`);
+                console.log(`Rule ${rule.identifier} NOT valid: ${rule.getDescription()}`);
             validity = rule_valid && validity;
             // end loop when a rule is not respected
             if (!validity) return false;
