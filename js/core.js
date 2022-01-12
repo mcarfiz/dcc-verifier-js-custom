@@ -4,7 +4,6 @@ var usrDob = document.getElementById('userdata-dob');
 var restartButton = document.getElementById('restartscan');
 var resultBorder = document.getElementById('resultborder');
 
-var BASE_URL = "https://mcarfiz.github.io/dgcc-verifier-js-custom/";
 var RULES_NUMBER;
 
 var html5QrcodeScanner = new Html5Qrcode(/* element id */ "reader");
@@ -38,7 +37,7 @@ async function onScanSuccess(decodedText, decodedResult) {
     var valueSets;
 
     // fetch value sets
-    await fetch(BASE_URL + '/data/rules/valueSets.json')
+    await fetch('./data/rules/valueSets.json')
         .then(response => {
             if (response.ok)
                 return response.json();
@@ -55,7 +54,7 @@ async function onScanSuccess(decodedText, decodedResult) {
         });
 
     // fetch general rules and push it into rules array
-    await fetch(BASE_URL + '/data/rules/GR-EU-0000.json')
+    await fetch('./data/rules/GR-EU-0000.json')
         .then(response => {
             if (response.ok)
                 return response.json();
@@ -70,7 +69,7 @@ async function onScanSuccess(decodedText, decodedResult) {
             errorMsg.className = "alert alert-danger";
             errorMsg.innerHTML = "Cannot fetch rule GR-EU-0000: " + error;
         });
-    await fetch(BASE_URL + '/data/rules/GR-EU-0001.json')
+    await fetch('./data/rules/GR-EU-0001.json')
         .then(response => {
             if (response.ok)
                 return response.json();
@@ -91,7 +90,7 @@ async function onScanSuccess(decodedText, decodedResult) {
     // build rules array from vaccination files
     if ('v' in dcc.payload) {
         RULES_NUMBER = 7;
-        await fetch(BASE_URL + '/data/rules/VR-EU-0000.json')
+        await fetch('./data/rules/VR-EU-0000.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -107,7 +106,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule VR-EU-0000: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/VR-EU-0001.json')
+        await fetch('./data/rules/VR-EU-0001.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -123,7 +122,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule VR-EU-0001: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/VR-EU-0002.json')
+        await fetch('./data/rules/VR-EU-0002.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -139,7 +138,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule VR-EU-0002: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/VR-EU-0003.json')
+        await fetch('./data/rules/VR-EU-0003.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -157,7 +156,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule VR-EU-0003: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/VR-EU-0004.json')
+        await fetch('./data/rules/VR-EU-0004.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -179,7 +178,7 @@ async function onScanSuccess(decodedText, decodedResult) {
     // build rules array from test files
     if ('t' in dcc.payload) {
         RULES_NUMBER = 7;
-        await fetch(BASE_URL + '/data/rules/TR-EU-0000.json')
+        await fetch('./data/rules/TR-EU-0000.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -195,7 +194,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule TR-EU-0000: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/TR-EU-0001.json')
+        await fetch('./data/rules/TR-EU-0001.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -211,7 +210,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule TR-EU-0001: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/TR-EU-0002.json')
+        await fetch('./data/rules/TR-EU-0002.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -227,7 +226,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule TR-EU-0002: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/TR-EU-0003.json')
+        await fetch('./data/rules/TR-EU-0003.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -245,7 +244,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule TR-EU-0003: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/TR-EU-0004.json')
+        await fetch('./data/rules/TR-EU-0004.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -266,7 +265,7 @@ async function onScanSuccess(decodedText, decodedResult) {
     // build rules array from recovery files
     if ('r' in dcc.payload) {
         RULES_NUMBER = 5;
-        await fetch(BASE_URL + '/data/rules/RR-EU-0000.json')
+        await fetch('./data/rules/RR-EU-0000.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -282,7 +281,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule RR-EU-0000: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/RR-EU-0001.json')
+        await fetch('./data/rules/RR-EU-0001.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -300,7 +299,7 @@ async function onScanSuccess(decodedText, decodedResult) {
                 errorMsg.innerHTML = "Cannot fetch rule RR-EU-0001: " + error;
             });
 
-        await fetch(BASE_URL + '/data/rules/RR-EU-0002.json')
+        await fetch('./data/rules/RR-EU-0002.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
@@ -326,7 +325,7 @@ async function onScanSuccess(decodedText, decodedResult) {
         console.log(`Date of birth: ${dcc.payload.dob}`);
         // fetch list of public keys
         var keysList;
-        await fetch(BASE_URL + '/data/public_keys.json')
+        await fetch('./data/public_keys.json')
             .then(response => {
                 if (response.ok)
                     return response.json();
