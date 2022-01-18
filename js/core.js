@@ -317,45 +317,45 @@ async function onScanSuccess(decodedText, decodedResult) {
         console.log("recovery");
     }
 
-    // check if dcc follows all the rules in the array
-    const rulesValid = await areRulesValid(dcc, rule_array);
-    if (dcc && rulesValid) {//dcc check isnt even needed because its in a try-catch block
+    // fetch list of public keys
+    let keysList;
+    await fetch('./data/public_keys.json')
+        .then(response => {
+            if (response.ok)
+                return response.json();
+            else
+                throw new Error('Fetching error');
+        })
+        .then(data => {
+            keysList = data;
+        })
+        .catch(error => {
+            document.getElementById('errborder').style.display = "flex";
+            errorMsg.className = "alert alert-danger";
+            errorMsg.innerHTML = "Cannot fetch keys list: " + error;
+        });
+
+    // check if cose signature is valid against set of public keys
+    try { // try-catch needed to handle exception that is thrown when kid is valid but signature is not matching
+        var verified = await verify(dcc, keysList);
+    } catch {
+        verified = false;
+    }
+    console.log(verified ? "Certificate signature has been verified." : "Certificate signature CANNOT be verified.");
+    if (dcc && verified) {//dcc check isnt even needed because its in a try-catch block
         console.log('Certificate content is valid.');
         console.log(`Name: ${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`);
         console.log(`Date of birth: ${dcc.payload.dob}`);
-        // fetch list of public keys
-        var keysList;
-        await fetch('./data/public_keys.json')
-            .then(response => {
-                if (response.ok)
-                    return response.json();
-                else
-                    throw new Error('Fetching error');
-            })
-            .then(data => {
-                keysList = data;
-            })
-            .catch(error => {
-                document.getElementById('errborder').style.display = "flex";
-                errorMsg.className = "alert alert-danger";
-                errorMsg.innerHTML = "Cannot fetch keys list: " + error;
-            });
-        // check if cose signature is valid against set of public keys
-        try { // try-catch needed to handle exception that is thrown when kid is valid but signature is not matching
-            var verified = await verify(dcc, keysList);
-        } catch {
-            verified = false;
-        }
 
-        if (verified) {
+        // check if dcc follows all the rules in the array
+        const rulesValid = await areRulesValid(dcc, rule_array);
+        if (rulesValid) {
             certValid(`${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`, `${dcc.payload.dob}`);
         }
         else {
             certNotValid(`${dcc.payload.nam.gn} ${dcc.payload.nam.fn}`, `${dcc.payload.dob}`);
         }
-        console.log(verified ? "Certificate signature has been verified." : "Certificate signature CANNOT be verified.");
     }
-
     else {
         certNotValid(`N/A`, `N/A`);
     }
