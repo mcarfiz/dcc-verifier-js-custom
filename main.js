@@ -5,12 +5,12 @@ const path = require('path');
 function createWindow() {
     const win = new BrowserWindow({
         width: 590,
-        height: 700,
+        height: 770,
         titleBarStyle: 'hidden',
         titleBarOverlay: {
             color: '#0d6efd',
             symbolColor: '#000000'
-        }/*,
+        }/*, // preload support
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
         }*/
@@ -20,8 +20,8 @@ function createWindow() {
     // set color mode to follow system settings
     nativeTheme.themeSource = 'system'
     // debug console
-    //win.webContents.openDevTools()
-    win.loadFile(path.join(__dirname, '/index.html'))
+    win.webContents.openDevTools()
+    win.loadFile(path.join(__dirname, '/public/index.html'))
 
 }
 

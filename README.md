@@ -1,16 +1,19 @@
-# dgcc-verifier-js-custom
-Verifier for a custom version of DGCC QR codes.
-
-Note: this app will not work with legit DGCC QR codes since they are signed with different keys.
+# dcc-verifier-js
+ A simple web app to optimize the QR code of the DCC
 
 # Usage
-Install `npm`
+ Install `npm`
  
-Install dependencies with
->npm install
+ Install dependencies with
+ >npm install
 
-Run with
->npm start
+ Run with
+ >npm start
 
-# Demo
-Live demo is available [at this link](https://mcarfiz.github.io/dgcc-verifier-js-custom) thanks to GitHub pages.
+ Alternative:
+ [Use http-server](https://www.npmjs.com/package/http-server) to launch in browser.
+
+# Live demo
+Live demo is available [at this link](https://mcarfiz.github.io/dcc-optimizer-js) thanks to GitHub pages.
+
+

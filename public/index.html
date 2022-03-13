@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>DCC QR Verifier</title>
+    <!-- bootstrap stuff -->
+    <link href="./bootstrap/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="./bootstrap/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="./bootstrap/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="./bootstrap/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" type="text/css" href="./theme.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="img/icon.png">
+</head>
+
+<body>
+    <script type="text/javascript" src="./lib/html5-qrcode.min.js"></script>
+    <script type="text/javascript" src="./lib/qr-code-styling.js"></script>
+    <script type="text/javascript" src="./lib/lang.js"></script>
+    <!-- build via browserify dcc.js --standalone DCC > dcc-browser.js -->
+    <script type="module" src="./lib/dcc-browser.js"></script>
+    <script type="module" src="./lib/crypto.js"></script>
+
+    <!-- main script import -->
+    <script type="module" src="core.js"></script>
+
+    <!-- navbar -->
+    <nav class="navbar navbar-dark bg-primary" style="padding-top: 20px;" aria-labelledby="nav-title">
+        <div class="container-fluid">
+            <div class="navbar-brand">
+                <span id="nav-title"></span>
+            </div>
+            <div id="nav-home" class="nav-item" style=" margin-right: 0;">
+                <span><a id="nav-home-btn" style="color: white;">Home</a></span>
+            </div>
+            <div class="nav-item" style=" margin-right: 0; margin-left: 0">
+                <span><a id="nav-faq-btn" style="color: white;" href="#">FAQ</a></span>
+            </div>
+            <div class="nav-item" style="margin-right: 0; margin-left: 0;">
+                <span><a id="ita" style="color:white">ITA</a></span>
+                <math>
+                    <mfenced>
+                        <mo separator="true" style="color:white">/</mo>
+                    </mfenced>
+                </math>
+                <span><a id="eng" style="color:white" href="#">ENG</a></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- FAQ section -->
+    <div class="collapse" id="faq-container" style="width: 85%; margin: auto;">
+        <div class="row p-2">
+            <h3 id="faq-title">FAQ</h3>
+        </div>
+
+        <div id="faqText" style="display: table;">
+            <ol style="width:100%;">
+                <li><b class="question"></b>
+                    <div id="question1"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer1"></div>
+                <li><b class="question"></b>
+                    <div id="question2"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer2"></div>
+                <li><b class="question"></b>
+                    <div id="question7"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer7"></div>
+                <li><b class="question"></b>
+                    <div id="question3"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer3"></div>
+                <details>
+                    <summary><b class="adv-detail"></b></summary>
+                    <div id="advanced-faq-1">
+
+                        <div id="adv-ans3"></div>
+
+                        <ul>
+                            <li>
+                                <b id="adv-ans3-file-sel1"></b>
+                                <div id="adv-ans3-file-sel2"></div>
+                                <br><a href="./img/local_request.png" target="_blank"><img
+                                        class="img-fluid img-thumbnail" src="./img/local_request.png"></a><br>
+                                <div id="adv-ans3-file-sel3"></div>
+                                <br><a href="./img/network_request.png" target="_blank"><img
+                                        class="img-fluid img-thumbnail" src="./img/network_request.png"></a><br>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li>
+                                <b id="adv-ans3-qr-scan1"></b>
+                                <div id="adv-ans3-qr-scan2"></div>
+                            </li>
+                        </ul>
+
+                        <ul>
+                            <li>
+                                <b id="adv-ans3-qr-gen1"></b>
+                                <div id="adv-ans3-qr-gen2"></div>
+                            </li>
+                        </ul>
+
+                    </div>
+                </details>
+                <li><b class="question"></b>
+                    <div id="question4"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer4"></div>
+                <li><b class="question"></b>
+                    <div id="question5"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer5"></div>
+                <details>
+                    <summary><b class="adv-detail"></b></summary>
+                    <div id="advanced-faq-2">
+                        <div id="adv-ans5"></div>
+                    </div>
+                </details>
+                <li><b class="question"></b>
+                    <div id="question6"></div>
+                </li>
+                <b class="answer"></b>
+                <div id="answer6"></div>
+            </ol>
+        </div>
+    </div>
+
+    <!-- home -->
+    <div id="main-container" class="rowd-flex flex-column mx-auto" style="width: 85%;">
+        <div class="row p-2">
+            <h3 id="main-title"></h3>
+        </div>
+        <div class="row p-2" style="display: table">
+            <label id="file-selector-label" class="btn btn-primary" for="file-selector"></label>
+            <!--  accept="image/*" -->
+            <input type="file" style="display:none" id="file-selector">
+            <!-- <small class="text-muted" id="upload-file-info"></small> file info label-->
+        </div>
+
+        <div class="row p-2" style="display: table">
+            <input type="button" class="btn btn-success" id="qrcamera-btn">
+        </div>
+        <div id="reader"></div>
+        <details>
+            <summary><small id="adv-options" class="text-muted"></small></summary>
+            <div id="radios" style="margin-top: 1%;">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio-eu" checked>
+                    <label id="radio-label-eu" class="form-check-label" for="radio-eu">
+                    </label>
+                </div>
+                <div class="form-check" style="margin-top: 1%;">
+                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio-it">
+                    <label id="radio-label-it" class="form-check-label" for="radio-it">
+                    </label>
+                </div>
+            </div>
+        </details>
+
+        <div class="row p-2" style="display: table">
+            <div id="error-msg" role="alert"></div>
+        </div>
+
+        <div class="row p-2" style="display: table">
+            <div id="result-msg" role="alert"></div>
+        </div>
+
+        <div class="row p-2">
+            <div class="max-vw-50" id="qrcode-canvas"></div>
+        </div>
+        <div class="row p-2">
+            <div class="col-sm">
+                <input type="button" class="btn btn-primary" style="display: none; margin-top: 1%;" id="download"
+                    value="Download QR code">
+            </div>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

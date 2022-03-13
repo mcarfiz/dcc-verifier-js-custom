@@ -1,15 +1,22 @@
 {
-  "name": "dgcc-verifier-js-custom",
+  "name": "qr-verifier",
   "version": "1.0.0",
-  "description": "DGCC QR verifier for a smaller customized version.",
+  "description": "A Digital COVID Certificate QR verifier.",
   "main": "main.js",
+  "keywords": [],
+  "author": "Marco Carfizzi, Giacomo Arrigo",
+  "license": "ISC",
   "devDependencies": {
-    "electron": "^16.0.0"
+    "electron": "^17.1.2"
   },
   "scripts": {
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Marco Carfizzi, Giacomo Arrigo",
-  "license": "ISC"
+  "dependencies": {
+    "asn1": "^0.2.6",
+    "browserify-aes": "^1.2.0",
+    "elliptic": "^6.5.4",
+    "js-sha256": "^0.9.0"
+  }
 }
