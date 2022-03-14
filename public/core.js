@@ -14,18 +14,6 @@ QrScanner.WORKER_PATH = './lib/qr-scanner-worker.min.js';
 var html5QrcodeScanner = new Html5Qrcode(/* element id */ "reader");
 var config = { fps: 10, qrbox: { width: document.getElementById('reader').clientWidth * 0.75, height: document.getElementById('reader').clientHeigth * 0.75 } };
 
-String.prototype.hexEncode = function(){
-    var hex, i;
-
-    var result = "";
-    for (i=0; i<this.length; i++) {
-        hex = this.charCodeAt(i).toString(16);
-        result += ("000"+hex).slice(-4);
-    }
-
-    return result
-}
-
 var qrCode;
 var dcc;
 var qrEngine;
@@ -33,22 +21,22 @@ var text;
 var tab = "home";
 var lang = ita;
 
-var pubkey = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETbMXaEjfMunKT2TUq99Gd4Ap+RjZ\nDt/RCxDy5Rk835jY2qBvPz4fqJQ6Pscm70JlFGVn11QZ40kEnNbc/M3Ktw==";
 var qr = "6BFKOCQRRT9V1DRCTMJ9J7$CBX4TXV-V7UWAU-GS$L1WL*WII7ULPMW.PTA881V6:PSTTD%G4G3$75M.B3WVJLMO$E% 7416Y1C-XDFRCWOK-GGKX4X6EZV0*Q43.QPWDAB864KAAWL7UI2I99W/5WHVVQC1946/565-SA24440$N054"
+
 // on load: load localization and set up qrscanner engine
 $(document).ready(function () {
     load_text();
-    qrEngine = QrScanner.createQrEngine();
-    DCC.fromRaw(qr).then(value =>{
-        var pk ="-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEbHoqDeFIe/mFI3i0atXbq+zYimlC\nyyBa98laZjHLJ33s5ZUbh2KqLhqE77ZO+jqJJfr+S3m7s4gSoBVWLyJDWA==\n-----END PUBLIC KEY-----"
-        window.verify(value.payload, value.signature, pk);
-        // const ver = window.CRYPTO.Verify('sha256');
-        // var payload = (window.BUFFER.Buffer.from(value.payload).buffer);
-        // var signature = (window.BUFFER.Buffer.from(value.signature).buffer)
-        // ver.update(payload);
-        // ver.end();
-        // console.log(ver.verify(("-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAETbMXaEjfMunKT2TUq99Gd4Ap+RjZDt/RCxDy5Rk835jY2qBvPz4fqJQ6Pscm70JlFGVn11QZ40kEnNbc/M3Ktw==\n-----END PUBLIC KEY-----", signature)));
-    });
+    try{
+        qrEngine = QrScanner.createQrEngine();
+        // window.downloadCertificateList("192.168.1.137");
+        // window.downloadVaccineList("192.168.1.137");
+        // window.downloadTestList("192.168.1.137");
+        // window.downloadDiseaseList("192.168.1.137");
+        // window.downloadAlgorithmList("192.168.1.137");
+    }
+    catch(error){
+        console.log(error);
+    }
     
 });
 
@@ -60,19 +48,11 @@ fileSelector.addEventListener('change', event => {
     // scan qr from image
     QrScanner.scanImage(file, null, qrEngine)
         .then(result => {
-            text = result;
-            verify(text)
+            verify(result);
         })
         .catch(e => error(e || 'No QR code found.'));
 });
 
-// when a radio is changed re-encode the qr (if it's there)
-radios.addEventListener('change', event => {
-    resetPage();
-    if (!text) return;
-    // scan qr from image
-    verify(text);
-});
 
 fileSelector.addEventListener("click", event => {
     revertScan();
@@ -114,9 +94,20 @@ function revertScan() {
 async function verify(/*label,*/ result) {
     // decode of cose content into dcc variable
     DCC.fromRaw(result).then(value =>{
-        console.log(value);
-    }).
-    catch(e => error(e));
+        console.log(value)
+        var pk_raw = (JSON.parse(localStorage.certificates))[value.kid]["publicKeyPem"]
+        var pk = "-----BEGIN PUBLIC KEY-----\n"+pk_raw+"\n-----END PUBLIC KEY-----";
+        window.verify(value.payload, value.signature, pk).then(result =>{
+            if(result){
+                console.log("Signature is correct.");
+            }
+            else{
+                console.log("Signature is wrong.");
+            }
+        });
+    }).catch(err => {
+        error("Could not verify the DCC.");
+    });
 
 
 }

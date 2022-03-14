@@ -26632,7 +26632,7 @@ const crypto = require('crypto');
 const buffer = require('buffer');
 const sha256 = require('js-sha256');
 
-function verify(payload, signature, public_key){
+async function verify(payload, signature, public_key){
     var ec = new ECDSA('p256');
     const ver = crypto.Verify('sha256');
     var buf = new Uint8Array(signature);
@@ -26647,16 +26647,9 @@ function verify(payload, signature, public_key){
     var pk_hex = buffer.Buffer.from(buf).toString("hex");
     const key = ec.keyFromPublic(pk_hex, 'hex');
     const pay = sha256(payload);
-    const result = key.verify(pay, sig);
-    console.log(result);
-}
-// function verify (sig, hash, key, signType, tag) {
-//     var pub = parseKeys(key)
-//     return pub;
+    return key.verify(pay, sig);
 
-// window.EC = ec;
-// window.CRYPTO = crypto;
-window.BUFFER = buffer;
+}
 window.verify = verify;
 
 

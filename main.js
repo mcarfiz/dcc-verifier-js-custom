@@ -1,6 +1,9 @@
 const { app, BrowserWindow, nativeTheme } = require("electron");
 const path = require('path');
 
+//WARNING: certificates are not checked for testing with self signed certificates
+app.commandLine.appendSwitch('ignore-certificate-errors')
+
 // create new application window
 function createWindow() {
     const win = new BrowserWindow({
