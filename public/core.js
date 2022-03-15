@@ -78,7 +78,6 @@ function revertScan() {
 async function verify(result) {
     // decode of cose content into dcc variable
     DCC.fromRaw(result).then(dcc => {
-        console.log(dcc)
         fetch('./data/certficateList.json')
             .then(response => {
                 if (response.ok)
@@ -119,7 +118,7 @@ async function verify(result) {
 // check if dcc follows set of rules
 const areRulesValid = async function (dcc) {
     let rules = []
-    var valueSets;
+    var logicObject;
 
     await fetch('./data/valueSets.json')
     .then(response => {
@@ -129,7 +128,7 @@ const areRulesValid = async function (dcc) {
             throw new Error('Fetching error');
     })
     .then(data => {
-        valueSets = data;
+        logicObject = {"dcc": dcc, "rule": data};
     })
     .catch(error => {
         document.getElementById('errborder').style.display = "flex";
@@ -154,14 +153,13 @@ const areRulesValid = async function (dcc) {
         errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
     });
 
-
     // certificate cannot be verified if all rules haven't been fetched
     
     for (const rule of rules) {
         // handling exception of when the payload has valid structure but data of wrong type
         // or anything that doesn't work with the rules
         try {
-            var rule_valid = await rule.evaluateDCC(dcc);
+            var rule_valid = await rule.evaluateDCC(logicObject);
             if (rule_valid)
                 console.log(`Rule ${rule.identifier} VALID: ${rule.getDescription()}`);
             else

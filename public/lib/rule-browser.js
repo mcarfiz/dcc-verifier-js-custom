@@ -44,6 +44,7 @@ exports.evaluate = void 0;
 const typings_1 = require("./typings");
 const internals_1 = require("./internals");
 const evaluateVar = (value, data) => {
+    
     if (typeof value !== "string") {
         throw new Error(`not of the form { "var": "<path>" }`);
     }
@@ -55,6 +56,7 @@ const evaluateVar = (value, data) => {
         if (acc === null) {
             return null;
         }
+        
         const index = parseInt(fragment, 10);
         const value = isNaN(index) ? acc[fragment] : acc[index];
         return value === undefined ? null : value;
@@ -128,14 +130,13 @@ const evaluateInfix = (operator, values, data) => {
             break;
         }
     }
-    const evalArgs = values.map((arg) => exports.evaluate(arg, data));
+    var evalArgs = [];
+    values.map((arg) => {evalArgs.push(exports.evaluate(arg, data))});
     switch (operator) {
         case "===": return evalArgs[0] === evalArgs[1];
         case "in": {
+
             const r = evalArgs[1];
-            console.log(evalArgs[0]);
-            console.log(data);
-            console.log(evalArgs)
             if (!Array.isArray(r)) {
                 throw new Error(`right-hand side of an "in" operation must be an array`);
             }

@@ -1,6 +1,6 @@
 {
     "rules": [
-        {
+                {
             "Identifier": "GR-EU-0000",
             "Type": "Acceptance",
             "Country": "EU",
@@ -22,48 +22,20 @@
             ],
             "Logic": {
                 "if": [
-                    true,
+                    {
+                        "var": "payload.dcc.disease"
+                    },
                     {
                         "in": [
                             {
-                                "var": "disease"
+                                "var": "payload.dcc.disease"
                             },
                             {
-                                "var": "external.valueSets.disease-agent-targeted"
+                                "var": "payload.rule.disease-agent-targeted"
                             }
                         ]
                     },
                     false
-                ]
-            }
-        },
-        {
-            "Identifier": "RR-EU-0000",
-            "Type": "Acceptance",
-            "Country": "EU",
-            "Version": "1.0.0",
-            "SchemaVersion": "1.0.0",
-            "Engine": "CERTLOGIC",
-            "EngineVersion": "0.7.5",
-            "CertificateType": "Recovery",
-            "Description": [
-                {
-                    "lang": "en",
-                    "desc": "At most one r-event."
-                }
-            ],
-            "ValidFrom": "2021-07-03T00:00:00Z",
-            "ValidTo": "2030-06-01T00:00:00Z",
-            "AffectedFields": [
-                "r.1"
-            ],
-            "Logic": {
-                "if": [
-                    {
-                        "var": "payload.r.1"
-                    },
-                    false,
-                    true
                 ]
             }
         },
@@ -92,14 +64,14 @@
             "Logic": {
                 "if": [
                     {
-                        "var": "payload.r.0"
+                        "var": "payload.dcc.dateFr"
                     },
                     {
                         "not-after": [
                             {
                                 "plusTime": [
                                     {
-                                        "var": "payload.r.0.df"
+                                        "var": "payload.dcc.dateFr"
                                     },
                                     0,
                                     "day"
@@ -117,7 +89,7 @@
                             {
                                 "plusTime": [
                                     {
-                                        "var": "payload.r.0.du"
+                                        "var": "payload.dcc.dateDu"
                                     },
                                     0,
                                     "day"
@@ -209,36 +181,7 @@
                 ]
             }
         },
-        {
-            "Identifier": "TR-EU-0000",
-            "Type": "Acceptance",
-            "Country": "EU",
-            "Version": "1.0.0",
-            "SchemaVersion": "1.0.0",
-            "Engine": "CERTLOGIC",
-            "EngineVersion": "0.7.5",
-            "CertificateType": "Test",
-            "Description": [
-                {
-                    "lang": "en",
-                    "desc": "At most one t-event."
-                }
-            ],
-            "ValidFrom": "2021-07-03T00:00:00Z",
-            "ValidTo": "2030-06-01T00:00:00Z",
-            "AffectedFields": [
-                "t.1"
-            ],
-            "Logic": {
-                "if": [
-                    {
-                        "var": "payload.t.1"
-                    },
-                    false,
-                    true
-                ]
-            }
-        },
+
         {
             "Identifier": "TR-EU-0001",
             "Type": "Acceptance",
@@ -271,7 +214,7 @@
                                 "var": "payload.t.0.tt"
                             },
                             {
-                                "var": "external.valueSets.covid-19-lab-test-type"
+                                "var": "payload.rule.covid-19-lab-test-type"
                             }
                         ]
                     },
@@ -316,7 +259,7 @@
                                 "var": "payload.t.0.ma"
                             },
                             {
-                                "var": "external.valueSets.covid-19-lab-test-manufacturer-and-name"
+                                "var": "payload.rule.covid-19-lab-test-manufacturer-and-name"
                             }
                         ]
                     },
@@ -410,36 +353,6 @@
                             "260415000"
                         ]
                     },
-                    true
-                ]
-            }
-        },
-        {
-            "Identifier": "VR-EU-0000",
-            "Type": "Acceptance",
-            "Country": "EU",
-            "Version": "1.0.0",
-            "SchemaVersion": "1.0.0",
-            "Engine": "CERTLOGIC",
-            "EngineVersion": "0.7.5",
-            "CertificateType": "Vaccination",
-            "Description": [
-                {
-                    "lang": "en",
-                    "desc": "At most one vaccination event."
-                }
-            ],
-            "ValidFrom": "2021-07-03T00:00:00Z",
-            "ValidTo": "2030-06-01T00:00:00Z",
-            "AffectedFields": [
-                "v.1"
-            ],
-            "Logic": {
-                "if": [
-                    {
-                        "var": "payload.v.1"
-                    },
-                    false,
                     true
                 ]
             }
