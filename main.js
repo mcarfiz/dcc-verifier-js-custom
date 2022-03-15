@@ -1,8 +1,43 @@
 const { app, BrowserWindow, nativeTheme } = require("electron");
+const https = require('https');
+const fs = require('fs');
 const path = require('path');
+const GATEWAY_URL = "192.168.1.111";
+const LocalStorage = require('node-localstorage').LocalStorage;
+var localStorage = new LocalStorage(path.join(__dirname, "/public/data"));
 
-//WARNING: certificates are not checked for testing with self signed certificates
-app.commandLine.appendSwitch('ignore-certificate-errors')
+
+async function updateList(){
+    var date = new Date().toLocaleDateString();
+    if (localStorage.getItem('upDate') === date)
+        return;
+    downloadList(GATEWAY_URL, "/certificateList", "/public/data/certficateList.json");
+    downloadList(GATEWAY_URL, "/vaccineList", "/public/data/vaccineList.json");
+    downloadList(GATEWAY_URL, "/testList", "/public/data/testList.json");
+    downloadList(GATEWAY_URL, "/diseaseList", "/public/data/diseaseList.json");
+    downloadList(GATEWAY_URL, "/algorithmList", "/public/data/algorithmList.json");    
+    localStorage.setItem('upDate', date);
+}
+
+async function downloadList(url, urlPath, fsPath){   
+
+    const options = {
+        hostname: url,
+        port: 5000,
+        path: urlPath,
+        method: 'GET',
+        //WARNING: certificates are not checked for testing with self signed certificates
+        rejectUnauthorized: false
+    }
+    let result;
+    const req = https.request(options, res=>{
+        res.on('data', d =>{
+            fs.writeFile(path.join(__dirname, fsPath), d, function(err){
+            });
+        })
+    })
+    req.end();
+}
 
 // create new application window
 function createWindow() {
@@ -36,6 +71,7 @@ app.whenReady().then(() => {
             createWindow()
         }
     })
+    updateList();
 })
 
 // app closure

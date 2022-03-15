@@ -28,7 +28,7 @@
     <!-- build via browserify dcc.js --standalone DCC > dcc-browser.js -->
     <script type="module" src="./lib/dcc-browser.js"></script>
     <script type="module" src="./lib/crypto.js"></script>
-    <script type="module" src="./lib/http.js"></script>
+    <script type="module" src="./lib/rule-browser.js"></script>
 
     <!-- main script import -->
     <script type="module" src="core.js"></script>
@@ -160,21 +160,6 @@
             <input type="button" class="btn btn-success" id="qrcamera-btn">
         </div>
         <div id="reader"></div>
-        <details>
-            <summary><small id="adv-options" class="text-muted"></small></summary>
-            <div id="radios" style="margin-top: 1%;">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio-eu" checked>
-                    <label id="radio-label-eu" class="form-check-label" for="radio-eu">
-                    </label>
-                </div>
-                <div class="form-check" style="margin-top: 1%;">
-                    <input class="form-check-input" type="radio" name="flexRadioDefault" id="radio-it">
-                    <label id="radio-label-it" class="form-check-label" for="radio-it">
-                    </label>
-                </div>
-            </div>
-        </details>
 
         <div class="row p-2" style="display: table">
             <div id="error-msg" role="alert"></div>
@@ -187,10 +172,24 @@
         <div class="row p-2">
             <div class="max-vw-50" id="qrcode-canvas"></div>
         </div>
-        <div class="row p-2">
-            <div class="col-sm">
-                <input type="button" class="btn btn-primary" style="display: none; margin-top: 1%;" id="download"
-                    value="Download QR code">
+        <div id="resultborder" class="row-md-auto border rounded" style="height: 75%; margin-top: 3%; display: none;">
+            <div class="col-md my-auto" style="margin: auto;">
+
+                <h3>
+                    <div id="contentresult" style="color: white;"></div>
+                </h3><br>
+                <h4>
+                    <div style="color: lightgray;">Name:</div>
+                </h4>
+                <h3>
+                    <div id="userdata-name" style="color:white"></div>
+                </h3><br>
+                <h4>
+                    <div style="color: lightgray;">Date of birth:</div>
+                </h4>
+                <h3>
+                    <div id="userdata-dob" style="color:white"></div>
+                </h3>
             </div>
         </div>
 

@@ -21,74 +21,73 @@ function hexToUtf8(hex){
 
 class DCC {
   static async fromRaw(payload) {
-    const dcc = new DCC();
+    var dcc = {};
     const base45Data = base45.decode(payload);
-    dcc._payload = zlib.inflateSync(base45Data);
-    dcc._signature = dcc._payload.slice(1, 64+1); //ALGO!
+    dcc.payload = zlib.inflateSync(base45Data);
+    dcc.signature = dcc.payload.slice(1, 64+1); //ALGO!
     
-    payload = new Buffer(dcc._payload).toString('hex');
-    dcc._payload = dcc._payload.slice(65); //ALGO!
+    payload = new Buffer(dcc.payload).toString('hex');
+    dcc.payload = dcc.payload.slice(65); //ALGO!
     var start = 64*2 + 2; //ALGO!
-    dcc._kid = parseInt(payload.slice(start, start+4), 16);
+    dcc.kid = parseInt(payload.slice(start, start+4), 16);
     start += 4;
     var byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
     start += 2;
-    dcc._endCert = parseInt(payload.slice(start, start+byteCount), 16);
+    dcc.endCert = parseInt(payload.slice(start, start+byteCount), 16);
     start += byteCount;
     byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
     start += 2;
-    dcc._beginCert = parseInt(payload.slice(start, start+byteCount), 16);
+    dcc.beginCert = parseInt(payload.slice(start, start+byteCount), 16);
     start += byteCount;
     byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
     start += 2;
-    dcc._surname = hexToUtf8(payload.slice(start, start+byteCount));
+    dcc.surname = hexToUtf8(payload.slice(start, start+byteCount));
     start += byteCount;
     byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
     start += 2;
-    dcc._name = hexToUtf8(payload.slice(start, start+byteCount));
+    dcc.name = hexToUtf8(payload.slice(start, start+byteCount));
     start += byteCount;
     byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
     start += 2;
-    dcc._birth = parseInt(payload.slice(start, start+byteCount), 16);
+    dcc.birth = parseInt(payload.slice(start, start+byteCount), 16);
     start += byteCount;
-    var certType = parseInt(payload.slice(start, start+2), 16);
+    dcc.certType = parseInt(payload.slice(start, start+2), 16);
     start += 2;
-    dcc._disease = parseInt(payload.slice(start, start+4), 16);
+    dcc.disease = parseInt(payload.slice(start, start+4), 16);
     start += 4;
-    if (certType==1){
-      dcc._vaccine = parseInt(payload.slice(start, start+4), 16);
+    if (dcc.certType==1){
+      dcc.vaccine = parseInt(payload.slice(start, start+4), 16);
       start += 4;
-      dcc._dosesDone = parseInt(payload.slice(start, start+2), 16);
+      dcc.dosesDone = parseInt(payload.slice(start, start+2), 16);
       start += 2;
-      dcc._dosesReq = parseInt(payload.slice(start, start+2), 16);
+      dcc.dosesReq = parseInt(payload.slice(start, start+2), 16);
       start += 2;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc._dateVax = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateVax = parseInt(payload.slice(start, start+byteCount), 16);
     }
-    else if (certType==2){
-      dcc._testResult = parseInt(payload.slice(start, start+2), 16);
+    else if (dcc.certType==2){
+      dcc.testResult = parseInt(payload.slice(start, start+2), 16);
       start += 2;
-      dcc._testId = parseInt(payload.slice(start, start+4), 16);
+      dcc.testId = parseInt(payload.slice(start, start+4), 16);
       start += 4;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc._dateTest = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateTest = parseInt(payload.slice(start, start+byteCount), 16);
     }
-    else if (certType==3){
+    else if (dcc.certType==3){
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc._dateFr = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateFr = parseInt(payload.slice(start, start+byteCount), 16);
       start += byteCount;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc._dateDf = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateDf = parseInt(payload.slice(start, start+byteCount), 16);
       start += byteCount;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc._dateDu = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateDu = parseInt(payload.slice(start, start+byteCount), 16);
     }
-    // console.log(dcc._dateVax)
     return dcc;
   }
 

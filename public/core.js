@@ -1,10 +1,11 @@
 const fileSelector = document.getElementById('file-selector')
-const downloadButton = document.getElementById('download')
 const qrCanvas = document.getElementById('qrcode-canvas')
 const errorMsg = document.getElementById('error-msg')
 const resMsg = document.getElementById('result-msg')
-const radios = document.getElementById('radios')
 const cameraBtn = document.getElementById('qrcamera-btn')
+const resultBorder = document.getElementById('resultborder');
+const usrName = document.getElementById('userdata-name');
+const usrDob = document.getElementById('userdata-dob');
 
 
 import QrScanner from './lib/qr-scanner.js';
@@ -14,30 +15,14 @@ QrScanner.WORKER_PATH = './lib/qr-scanner-worker.min.js';
 var html5QrcodeScanner = new Html5Qrcode(/* element id */ "reader");
 var config = { fps: 10, qrbox: { width: document.getElementById('reader').clientWidth * 0.75, height: document.getElementById('reader').clientHeigth * 0.75 } };
 
-var qrCode;
-var dcc;
 var qrEngine;
-var text;
 var tab = "home";
 var lang = ita;
-
-var qr = "6BFKOCQRRT9V1DRCTMJ9J7$CBX4TXV-V7UWAU-GS$L1WL*WII7ULPMW.PTA881V6:PSTTD%G4G3$75M.B3WVJLMO$E% 7416Y1C-XDFRCWOK-GGKX4X6EZV0*Q43.QPWDAB864KAAWL7UI2I99W/5WHVVQC1946/565-SA24440$N054"
 
 // on load: load localization and set up qrscanner engine
 $(document).ready(function () {
     load_text();
-    try{
-        qrEngine = QrScanner.createQrEngine();
-        // window.downloadCertificateList("192.168.1.137");
-        // window.downloadVaccineList("192.168.1.137");
-        // window.downloadTestList("192.168.1.137");
-        // window.downloadDiseaseList("192.168.1.137");
-        // window.downloadAlgorithmList("192.168.1.137");
-    }
-    catch(error){
-        console.log(error);
-    }
-    
+    qrEngine = QrScanner.createQrEngine();   
 });
 
 // listener for change on file selector, when a new qr is inserted try to decode it
@@ -60,6 +45,7 @@ fileSelector.addEventListener("click", event => {
 
 // camera button listener to activate the camera scanner
 cameraBtn.addEventListener("click", function (element) {
+    resetPage();
     if (cameraBtn.className === "btn btn-success") {
         html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
             .then(success => {
@@ -77,9 +63,7 @@ cameraBtn.addEventListener("click", function (element) {
 // when a qr is successfully scanned
 async function onScanSuccess(decodedText) {
     revertScan();
-    resetPage();
-    text = decodedText;
-    verify(text);
+    verify(decodedText);
 }
 
 // stop camera scanning
@@ -91,32 +75,134 @@ function revertScan() {
 }
 
 // verify function called if the file scan was ok
-async function verify(/*label,*/ result) {
+async function verify(result) {
     // decode of cose content into dcc variable
-    DCC.fromRaw(result).then(value =>{
-        console.log(value)
-        var pk_raw = (JSON.parse(localStorage.certificates))[value.kid]["publicKeyPem"]
-        var pk = "-----BEGIN PUBLIC KEY-----\n"+pk_raw+"\n-----END PUBLIC KEY-----";
-        window.verify(value.payload, value.signature, pk).then(result =>{
-            if(result){
-                console.log("Signature is correct.");
-            }
-            else{
-                console.log("Signature is wrong.");
-            }
+    DCC.fromRaw(result).then(dcc => {
+        console.log(dcc)
+        fetch('./data/certficateList.json')
+            .then(response => {
+                if (response.ok)
+                    return response.json();
+                else
+                    throw new Error('Fetching error');
+            })
+            .then(data => {
+                var pk_raw = data[dcc.kid]["publicKeyPem"]
+                var pk = "-----BEGIN PUBLIC KEY-----\n"+pk_raw+"\n-----END PUBLIC KEY-----";
+                window.verify(dcc.payload, dcc.signature, pk)
+                .then(result =>{
+                    var d = new Date(dcc.birth*1000)
+                    var dob = ('0'+d.getDate()).slice(-2) + '/' + ('0'+(d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
+                    if(result){
+                        areRulesValid(dcc).then( result =>{
+                            if(result) certValid(`${dcc.name} ${dcc.surname}`, dob);
+                            else certNotValid(`${dcc.name} ${dcc.surname}`, dob);
+                        });
+                    }
+                    else{
+                        certNotValid(`${dcc.name} ${dcc.surname}`, dob);
+                    }
+                });
+            }).catch(err => {
+                certNotValid(`N/A`, `N/A`);
+            });
+        })
+        .catch(error => {
+                document.getElementById('errborder').style.display = "flex";
+                errorMsg.className = "alert alert-danger";
+                errorMsg.innerHTML = "Cannot fetch public key list: " + error;
         });
-    }).catch(err => {
-        error("Could not verify the DCC.");
-    });
 
 
 }
 
-// on-click listener for the download button
-downloadButton.addEventListener('click', function () {
-    // download generated image as jpg with a random name
-    qrCode.download({ name: "QR-Optimized", extension: "jpeg" });
-}, false);
+// check if dcc follows set of rules
+const areRulesValid = async function (dcc) {
+    let rules = []
+    var valueSets;
+
+    await fetch('./data/valueSets.json')
+    .then(response => {
+        if (response.ok)
+            return response.json();
+        else
+            throw new Error('Fetching error');
+    })
+    .then(data => {
+        valueSets = data;
+    })
+    .catch(error => {
+        document.getElementById('errborder').style.display = "flex";
+        errorMsg.className = "alert alert-danger";
+        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
+    });
+
+    await fetch('./data/rules.json')
+    .then(response => {
+        if (response.ok)
+            return response.json();
+        else
+            throw new Error('Fetching error');
+    })
+    .then(data => {
+        for (let rule in data.rules)
+            rules.push(Rule.fromJSON(data.rules[rule], {}));
+    })
+    .catch(error => {
+        document.getElementById('errborder').style.display = "flex";
+        errorMsg.className = "alert alert-danger";
+        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
+    });
+
+
+    // certificate cannot be verified if all rules haven't been fetched
+    
+    for (const rule of rules) {
+        // handling exception of when the payload has valid structure but data of wrong type
+        // or anything that doesn't work with the rules
+        try {
+            var rule_valid = await rule.evaluateDCC(dcc);
+            if (rule_valid)
+                console.log(`Rule ${rule.identifier} VALID: ${rule.getDescription()}`);
+            else
+                console.log(`Rule ${rule.identifier} NOT VALID: ${rule.getDescription()}`);
+            // end loop when a rule is not respected
+            if (!rule_valid) return false;
+            
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+    return true;
+}
+
+// fill result div with error colors and result values
+const certNotValid = function (name, dob) {
+    document.getElementById('contentresult').innerHTML = "Certificate is NOT VALID.";
+    resultBorder.style.display = "flex";
+    resultBorder.style.color = "red";
+    resultBorder.classList.remove("bg-success");
+    resultBorder.classList.remove("border-success");
+    resultBorder.classList.add("border-danger");
+    resultBorder.classList.add("bg-danger");
+    usrName.innerHTML = name;
+    usrDob.innerHTML = dob;
+}
+
+// fill result div with success colors and result values
+const certValid = function (name, dob) {
+    document.getElementById('contentresult').innerHTML = "Certificate is VALID.";
+    resultBorder.classList.remove("bg-danger");
+    resultBorder.classList.remove("border-danger");
+    resultBorder.classList.add("border-success");
+    resultBorder.classList.add("bg-success");
+    resultBorder.style.display = "flex";
+    usrName.innerHTML = name;
+    usrDob.innerHTML = dob;
+}
+
+
 
 // faq top nav click
 document.getElementById("nav-faq-btn").addEventListener("click", function () {
@@ -155,7 +241,6 @@ function load_text() {
     $('#main-title').html(lang["home"]["main-title"]);
     $('#file-selector-label').html(lang["home"]["file-selector"]);
     $("#qrcamera-btn").val(lang["home"]["qrcamera-btn"]);
-    $("#adv-options").html(lang["home"]["adv-options"]);
     $("#radio-label-eu").html(lang["home"]["radio-eu"]);
     $("#radio-label-it").html(lang["home"]["radio-it"]);
     if (resMsg.innerHTML)
@@ -191,9 +276,9 @@ function load_text() {
     $('#adv-ans5').html(lang["faq"]["adv-ans5"]);
 
     // listener for dinamically generated faq link in advanced settings
-    document.getElementById("setting-faq-btn").addEventListener("click", function () {
-        document.getElementById("nav-faq-btn").click();
-    }, false);
+    // document.getElementById("setting-faq-btn").addEventListener("click", function () {
+    //     document.getElementById("nav-faq-btn").click();
+    // }, false);
 }
 
 // italian language on click
@@ -216,11 +301,11 @@ $('#eng').click(function () {
 
 // flush errors and previous prints
 function resetPage() {
+    resultBorder.style.display = "none";
     errorMsg.innerHTML = "";
     errorMsg.className = "";
     resMsg.innerHTML = "";
     resMsg.className = "";
-    downloadButton.style.display = "none";
     qrCanvas.innerHTML = "";
 }
 
