@@ -18,11 +18,53 @@ var config = { fps: 10, qrbox: { width: document.getElementById('reader').client
 var qrEngine;
 var tab = "home";
 var lang = ita;
+var qr_text = "6BFB80530UAWT.D5LG%41+V7Y6O+32W/GRSCC7Q+JVOKGQIPR.9.TQ8J1GSAG9S$H0UGNIN92ILMGI51ENHP%0CLO044D..9*DBUGOD:TZ2B200:O0EG2A6CRICI55QZ0EIA*B9Q:9O09CB861AN:9N16$.H3H0Z507ICNHC.O0T*5C8GTMCV81JAV$I5"
+var external={};
 
+async function loadExternal(){
+    var validationClock = DCC.formatDate();
+    external.validationClock = validationClock;
+    var rules = [];
+    await fetch('./data/valueSets.json')
+    .then(response => {
+        if (response.ok)
+            return response.json();
+        else
+            throw new Error('Fetching error');
+    })
+    .then(data => {
+        external.valueSets = data;
+    })
+    .catch(error => {
+        document.getElementById('errborder').style.display = "flex";
+        errorMsg.className = "alert alert-danger";
+        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
+    });
+
+    await fetch('./data/rules.json')
+    .then(response => {
+        if (response.ok)
+            return response.json();
+        else
+            throw new Error('Fetching error');
+    })
+    .then(data => {
+        for (let rule in data.rules)
+            rules.push(Rule.fromJSON(data.rules[rule], {}));
+        external.rules = rules;
+    })
+    .catch(error => {
+        document.getElementById('errborder').style.display = "flex";
+        errorMsg.className = "alert alert-danger";
+        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
+    });
+}
 // on load: load localization and set up qrscanner engine
-$(document).ready(function () {
+$(document).ready(async function () {
     load_text();
-    qrEngine = QrScanner.createQrEngine();   
+    qrEngine = QrScanner.createQrEngine();  
+    await loadExternal();
+    verify(qr_text);
 });
 
 // listener for change on file selector, when a new qr is inserted try to decode it
@@ -85,13 +127,13 @@ async function verify(result) {
                 else
                     throw new Error('Fetching error');
             })
-            .then(data => {
+            .then(data => {          
                 var pk_raw = data[dcc.kid]["publicKeyPem"]
                 var pk = "-----BEGIN PUBLIC KEY-----\n"+pk_raw+"\n-----END PUBLIC KEY-----";
                 window.verify(dcc.payload, dcc.signature, pk)
                 .then(result =>{
                     var d = new Date(dcc.birth*1000)
-                    var dob = ('0'+d.getDate()).slice(-2) + '/' + ('0'+(d.getMonth()+1)).slice(-2) + '/' + d.getFullYear();
+                    var dob = ('0'+d.getUTCDate()).slice(-2) + '/' + ('0'+(d.getUTCMonth()+1)).slice(-2) + '/' + d.getUTCFullYear();
                     if(result){
                         areRulesValid(dcc).then( result =>{
                             if(result) certValid(`${dcc.name} ${dcc.surname}`, dob);
@@ -107,9 +149,7 @@ async function verify(result) {
             });
         })
         .catch(error => {
-                document.getElementById('errborder').style.display = "flex";
-                errorMsg.className = "alert alert-danger";
-                errorMsg.innerHTML = "Cannot fetch public key list: " + error;
+                console.log(error)
         });
 
 
@@ -117,53 +157,17 @@ async function verify(result) {
 
 // check if dcc follows set of rules
 const areRulesValid = async function (dcc) {
-    let rules = []
-    var logicObject;
-
-    await fetch('./data/valueSets.json')
-    .then(response => {
-        if (response.ok)
-            return response.json();
-        else
-            throw new Error('Fetching error');
-    })
-    .then(data => {
-        logicObject = {"dcc": dcc, "rule": data};
-    })
-    .catch(error => {
-        document.getElementById('errborder').style.display = "flex";
-        errorMsg.className = "alert alert-danger";
-        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
-    });
-
-    await fetch('./data/rules.json')
-    .then(response => {
-        if (response.ok)
-            return response.json();
-        else
-            throw new Error('Fetching error');
-    })
-    .then(data => {
-        for (let rule in data.rules)
-            rules.push(Rule.fromJSON(data.rules[rule], {}));
-    })
-    .catch(error => {
-        document.getElementById('errborder').style.display = "flex";
-        errorMsg.className = "alert alert-danger";
-        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
-    });
-
     // certificate cannot be verified if all rules haven't been fetched
     
-    for (const rule of rules) {
+    for (const rule of external.rules) {
         // handling exception of when the payload has valid structure but data of wrong type
         // or anything that doesn't work with the rules
         try {
-            var rule_valid = await rule.evaluateDCC(logicObject);
-            if (rule_valid)
-                console.log(`Rule ${rule.identifier} VALID: ${rule.getDescription()}`);
-            else
-                console.log(`Rule ${rule.identifier} NOT VALID: ${rule.getDescription()}`);
+            var rule_valid = await rule.evaluateDCC(dcc, external);
+            // if (rule_valid)
+            //     console.log(`Rule ${rule.identifier} VALID: ${rule.getDescription()}`);
+            // else
+            //     console.log(`Rule ${rule.identifier} NOT VALID: ${rule.getDescription()}`);
             // end loop when a rule is not respected
             if (!rule_valid) return false;
             

@@ -132,10 +132,10 @@ const evaluateInfix = (operator, values, data) => {
     }
     var evalArgs = [];
     values.map((arg) => {evalArgs.push(exports.evaluate(arg, data))});
+    // console.log(evalArgs)
     switch (operator) {
         case "===": return evalArgs[0] === evalArgs[1];
         case "in": {
-
             const r = evalArgs[1];
             if (!Array.isArray(r)) {
                 throw new Error(`right-hand side of an "in" operation must be an array`);
@@ -198,6 +198,7 @@ const evaluatePlusTime = (dateOperand, amount, unit, data) => {
         throw new Error(`"unit" argument (#3) of "plusTime" must be a string with one of the time units: ${typings_1.timeUnits.join(", ")}`);
     }
     const dateTimeStr = exports.evaluate(dateOperand, data);
+    
     if (typeof dateTimeStr !== "string") {
         throw new Error(`date argument of "plusTime" must be a string`);
     }

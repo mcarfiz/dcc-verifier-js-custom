@@ -19,7 +19,15 @@ function hexToUtf8(hex){
   );
 }
 
+
+
 class DCC {
+  static formatDate(date_int=0){
+    if(date_int)
+      return new Date(date_int*1000).toISOString();
+    else 
+      return new Date().toISOString();
+  }
   static async fromRaw(payload) {
     var dcc = {};
     const base45Data = base45.decode(payload);
@@ -55,7 +63,7 @@ class DCC {
     start += 2;
     dcc.disease = parseInt(payload.slice(start, start+4), 16);
     start += 4;
-    if (dcc.certType==1){
+    if (dcc.certType===1){
       dcc.vaccine = parseInt(payload.slice(start, start+4), 16);
       start += 4;
       dcc.dosesDone = parseInt(payload.slice(start, start+2), 16);
@@ -64,29 +72,29 @@ class DCC {
       start += 2;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc.dateVax = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateVax = DCC.formatDate(parseInt(payload.slice(start, start+byteCount), 16));
     }
-    else if (dcc.certType==2){
-      dcc.testResult = parseInt(payload.slice(start, start+2), 16);
+    else if (dcc.certType===2){
+      dcc.testResult = parseInt(payload.slice(start, start+2), 16).toString();
       start += 2;
       dcc.testId = parseInt(payload.slice(start, start+4), 16);
       start += 4;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc.dateTest = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateTest = DCC.formatDate(parseInt(payload.slice(start, start+byteCount), 16));
     }
-    else if (dcc.certType==3){
+    else if (dcc.certType===3){
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc.dateFr = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateFr = DCC.formatDate(parseInt(payload.slice(start, start+byteCount), 16));
       start += byteCount;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc.dateDf = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateDf = DCC.formatDate(parseInt(payload.slice(start, start+byteCount), 16));
       start += byteCount;
       byteCount = parseInt(payload.slice(start, start+2), 16) * 2;
       start += 2;
-      dcc.dateDu = parseInt(payload.slice(start, start+byteCount), 16);
+      dcc.dateDu = DCC.formatDate(parseInt(payload.slice(start, start+byteCount), 16));
     }
     return dcc;
   }

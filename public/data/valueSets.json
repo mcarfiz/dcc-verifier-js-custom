@@ -350,6 +350,8 @@
     "260415000"
   ],
   "covid-19-lab-test-type": [
+    1,
+    2,
     "LP217198-3",
     "LP6464-4"
   ],
@@ -381,7 +383,10 @@
     "EU/1/21/1529",
     "EpiVacCorona",
     "Inactivated-SARS-CoV-2-Vero-Cell",
-    "Sputnik-V"
+    "Sputnik-V",
+    1,
+    2,
+    3
   ],
   "sct-vaccines-covid-19": [
     "1119305005",
