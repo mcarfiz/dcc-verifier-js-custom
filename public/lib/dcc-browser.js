@@ -28,15 +28,16 @@ class DCC {
     else 
       return new Date().toISOString();
   }
-  static async fromRaw(payload) {
+  static async fromRaw(payload, external) {
     var dcc = {};
-    const base45Data = base45.decode(payload);
-    dcc.payload = zlib.inflateSync(base45Data);
-    dcc.signature = dcc.payload.slice(1, 64+1); //ALGO!
-    
+    dcc.payload = zlib.inflateSync(base45.decode(payload));
+
+    dcc.algo = (dcc.payload[0]).toString();
+    var sigBytes = external.algorithm.valueSetValues[dcc.algo].signatureBytes;
+    dcc.signature = dcc.payload.slice(1, sigBytes+1);
     payload = new Buffer(dcc.payload).toString('hex');
-    dcc.payload = dcc.payload.slice(65); //ALGO!
-    var start = 64*2 + 2; //ALGO!
+    dcc.payload = dcc.payload.slice(sigBytes+1);
+    var start = sigBytes*2 + 2;
     dcc.kid = parseInt(payload.slice(start, start+4), 16);
     start += 4;
     var byteCount = parseInt(payload.slice(start, start+2), 16) * 2;

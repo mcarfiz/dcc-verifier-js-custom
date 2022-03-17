@@ -18,7 +18,7 @@ var config = { fps: 10, qrbox: { width: document.getElementById('reader').client
 var qrEngine;
 var tab = "home";
 var lang = ita;
-var qr_text = "6BFB80530UAWT.D5LG%41+V7Y6O+32W/GRSCC7Q+JVOKGQIPR.9.TQ8J1GSAG9S$H0UGNIN92ILMGI51ENHP%0CLO044D..9*DBUGOD:TZ2B200:O0EG2A6CRICI55QZ0EIA*B9Q:9O09CB861AN:9N16$.H3H0Z507ICNHC.O0T*5C8GTMCV81JAV$I5"
+var qr_text = "6BFKOCNR2 MN7GN4DEO3U1O1ENL36EXSV YG6/MSZF-C9AJATMRBBTCKN0-0AF98$UZL6D R/DN%$U:.08G7137N*CDLE5/2D08+HOZLPJO3N*47O2P1P.Q55+8UP1C:HDD8R9U*.T02KP7QO6O*U5HYN323:C8JHH5W4B+6V50AVAE85"
 var external={};
 
 async function loadExternal(){
@@ -52,6 +52,21 @@ async function loadExternal(){
         for (let rule in data.rules)
             rules.push(Rule.fromJSON(data.rules[rule], {}));
         external.rules = rules;
+    })
+    .catch(error => {
+        document.getElementById('errborder').style.display = "flex";
+        errorMsg.className = "alert alert-danger";
+        errorMsg.innerHTML = "Cannot fetch rules value sets: " + error;
+    });
+    await fetch('./data/algorithmList.json')
+    .then(response => {
+        if (response.ok)
+            return response.json();
+        else
+            throw new Error('Fetching error');
+    })
+    .then(data => {
+        external.algorithm = data;
     })
     .catch(error => {
         document.getElementById('errborder').style.display = "flex";
@@ -119,7 +134,7 @@ function revertScan() {
 // verify function called if the file scan was ok
 async function verify(result) {
     // decode of cose content into dcc variable
-    DCC.fromRaw(result).then(dcc => {
+    DCC.fromRaw(result, external).then(dcc => {
         fetch('./data/certficateList.json')
             .then(response => {
                 if (response.ok)
@@ -127,10 +142,15 @@ async function verify(result) {
                 else
                     throw new Error('Fetching error');
             })
-            .then(data => {          
-                var pk_raw = data[dcc.kid]["publicKeyPem"]
+            .then(data => {
+                var pk_raw;       
+                if (dcc.algo === '0'){
+                    pk_raw = data["ECDSA"][dcc.kid]["publicKeyPem"];
+                }   
+                else if (dcc.algo === '1')
+                    pk_raw = data["RSA"][dcc.kid]["publicKeyPem"];
                 var pk = "-----BEGIN PUBLIC KEY-----\n"+pk_raw+"\n-----END PUBLIC KEY-----";
-                window.verify(dcc.payload, dcc.signature, pk)
+                window.verify(dcc.payload, dcc.signature, pk, dcc.algo)
                 .then(result =>{
                     var d = new Date(dcc.birth*1000)
                     var dob = ('0'+d.getUTCDate()).slice(-2) + '/' + ('0'+(d.getUTCMonth()+1)).slice(-2) + '/' + d.getUTCFullYear();
