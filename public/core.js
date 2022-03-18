@@ -18,7 +18,7 @@ var config = { fps: 10, qrbox: { width: document.getElementById('reader').client
 var qrEngine;
 var tab = "home";
 var lang = ita;
-var qr_text = "6BFKOCNR2 MN7GN4DEO3U1O1ENL36EXSV YG6/MSZF-C9AJATMRBBTCKN0-0AF98$UZL6D R/DN%$U:.08G7137N*CDLE5/2D08+HOZLPJO3N*47O2P1P.Q55+8UP1C:HDD8R9U*.T02KP7QO6O*U5HYN323:C8JHH5W4B+6V50AVAE85"
+var qr_text = "ÿ"
 var external={};
 
 async function loadExternal(){
@@ -90,6 +90,7 @@ fileSelector.addEventListener('change', event => {
     // scan qr from image
     QrScanner.scanImage(file, null, qrEngine)
         .then(result => {
+            console.log((result))
             verify(result);
         })
         .catch(e => error(e || 'No QR code found.'));
@@ -120,6 +121,7 @@ cameraBtn.addEventListener("click", function (element) {
 // when a qr is successfully scanned
 async function onScanSuccess(decodedText) {
     revertScan();
+    console.log(decodedText);
     verify(decodedText);
 }
 

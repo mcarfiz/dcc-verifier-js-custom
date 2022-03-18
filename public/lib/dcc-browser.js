@@ -5,10 +5,11 @@ const zlib = require('zlib');
 //const Jimp = require('jimp');
 //const jsQR = require('jsqr');
 const base45 = require('base45');
-const cbor = require('cbor');
-const cose = require('cose-js');
+// const cbor = require('cbor');
+// const cose = require('cose-js');
 const coseCommon = require('cose-js/lib/common');
 const rs = require('jsrsasign');
+// const iconv = require('iconv').Iconv;
 
 const { verify, webcrypto, SignatureMismatchError } = require('cosette/build/sign');
 
@@ -30,9 +31,12 @@ class DCC {
   }
   static async fromRaw(payload, external) {
     var dcc = {};
-    dcc.payload = zlib.inflateSync(base45.decode(payload));
-
+    // dcc.payload = zlib.inflateSync(base45.decode(payload));
+    
+    dcc.payload = Buffer(payload, "latin1")
+    console.log(dcc.payload)
     dcc.algo = (dcc.payload[0]).toString();
+    
     var sigBytes = external.algorithm.valueSetValues[dcc.algo].signatureBytes;
     dcc.signature = dcc.payload.slice(1, sigBytes+1);
     payload = new Buffer(dcc.payload).toString('hex');
