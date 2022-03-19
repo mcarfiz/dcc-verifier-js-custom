@@ -1,5 +1,5 @@
 {
-  "name": "qr-verifier",
+  "name": "DCC Custom Verifier",
   "version": "1.0.0",
   "description": "A Digital COVID Certificate QR verifier.",
   "main": "main.js",
